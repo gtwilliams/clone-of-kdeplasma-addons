@@ -50,9 +50,11 @@ Item {
                                                           theme.linkColor]
 
     readonly property var memoryColors: setColorsManually ? [plasmoid.configuration.memApplicationColor,
-                                                             plasmoid.configuration.memBuffersColor]
+                                                             plasmoid.configuration.memBuffersColor,
+                                                             plasmoid.configuration.memCachedColor]
                                                           : [theme.buttonFocusColor,
-                                                             theme.visitedLinkColor]
+                                                             theme.visitedLinkColor,
+                                                             theme.highlightColor]
     readonly property var swapColors: setColorsManually ? [plasmoid.configuration.swapUsedColor]
                                                         : [theme.highlightColor]
     readonly property var cacheColors: setColorsManually ? [plasmoid.configuration.cacheDirtyColor,
@@ -137,6 +139,7 @@ Item {
         readonly property string memFree: memPhysical + "free"
         readonly property string memApplication: memPhysical + "application"
         readonly property string memBuffers: memPhysical + "buf"
+        readonly property string memCached: memPhysical + "cached"
         readonly property string memUsed: memPhysical + "used"
         readonly property string swap: "mem/swap/"
         readonly property string swapUsed: swap + "used"
@@ -148,7 +151,7 @@ Item {
 
         property var totalCpuLoadProportions: [.0, .0, .0, .0]
         property int maxCpuIndex: 0
-        property var memoryUsageProportions: [.0, .0]
+        property var memoryUsageProportions: [.0, .0, .0]
         property double swapUsageProportion: .0
         property var cacheUsageProportions: [.0, .0]
 
@@ -159,7 +162,7 @@ Item {
         function sources() {
             var array = [niceLoad, userLoad, sysLoad,
                          ioWait, memFree, memApplication, memBuffers,
-                         memUsed, swapUsed, swapFree,
+                         memCached, memUsed, swapUsed, swapFree,
                          averageClock, totalLoad, cores, cacheDirty,
                          cacheWriteback]
 
@@ -195,6 +198,10 @@ Item {
             }
             else if (sourceName == memBuffers) {
                 memoryUsageProportions[1] = fitMemoryUsage(data.value)
+                memoryUsageProportionsChanged()
+            }
+            else if (sourceName == memCached) {
+                memoryUsageProportions[2] = fitMemoryUsage(data.value)
                 memoryUsageProportionsChanged()
             }
             else if (sourceName == swapUsed) {
@@ -365,6 +372,7 @@ Item {
         id: stdToolTip
         anchors.fill: parent
         active: true
+        interactive: true
         mainText: i18n("System load")
         subText: toolTipSubText()
         visible: !plasmoid.configuration.cpuAllActivated || dataSource.maxCpuIndex < 5
@@ -381,6 +389,7 @@ Item {
     PlasmaCore.ToolTipArea {
         anchors.fill: parent
         active: true
+        interactive: true
         visible: !stdToolTip.visible
 
         mainItem: Item {

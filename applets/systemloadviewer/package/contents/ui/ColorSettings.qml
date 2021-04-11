@@ -30,6 +30,7 @@ Kirigami.FormLayout {
 
     property alias cfg_memApplicationColor: memApplicationColorPicker.color
     property alias cfg_memBuffersColor: memBuffersColorPicker.color
+    property alias cfg_memCachedColor: memCachedColorPicker.color
     property alias cfg_cpuUserColor: cpuUserColorPicker.color
     property alias cfg_cpuIOWaitColor: cpuIOWaitColorPicker.color
     property alias cfg_cpuSysColor: cpuSysColorPicker.color
@@ -92,6 +93,12 @@ Kirigami.FormLayout {
     KQuickControls.ColorButton {
         id: memBuffersColorPicker
         Kirigami.FormData.label: i18nc("@label:chooser", "Buffers:")
+        enabled: setColorsManually.checked
+    }
+
+    KQuickControls.ColorButton {
+        id: memCachedColorPicker
+        Kirigami.FormData.label: i18nc("@label:chooser", "Cached:")
         enabled: setColorsManually.checked
     }
 
